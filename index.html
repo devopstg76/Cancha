@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Réservation des terrains – Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0b1020; --card:#111831; --muted:#aab3c5; --accent:#5eead4; --text:#e6ebff; }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;background:linear-gradient(180deg,#0b1020,#0b1020 40%,#0e1731 100%);color:var(--text);} 
+    .container{max-width:1100px;margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:12px 0 24px}
+    .title{font-weight:800;font-size:clamp(20px,4vw,36px);letter-spacing:.2px}
+    .subtitle{color:var(--muted);font-size:clamp(13px,2.5vw,16px)}
+    .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media (min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+    .btn{appearance:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);padding:10px 14px;border-radius:14px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(94,234,212,.15)}
+    iframe{width:100%;height:70vh;border:0;border-radius:14px;background:#0b1020}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(94,234,212,.15);color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.3px}
+    ul{margin:10px 0 0 18px}
+    li{margin:8px 0}
+    footer{opacity:.8;color:var(--muted);font-size:12px;margin-top:18px}
+    .small{font-size:12px;color:var(--muted)}
+    code{background:#0e1731;border:1px solid rgba(255,255,255,.08);padding:3px 6px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <div class="pill">Réservations</div>
+        <div class="title">Terrains – planning et réservations</div>
+        <div class="subtitle">Consultez les créneaux disponibles et les réservations. L’édition est limitée aux licenciés/adhérents et à l’administrateur du club.</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h2 style="margin:6px 0 8px">Planning (lecture seule)</h2>
+        <p class="small">Le tableau ci‑dessous est affiché en lecture seule. Pour modifier, cliquez sur l’un des boutons ci‑dessous (authentification requise).</p>
+        <!-- Remplacez l’URL ci-dessous par le lien "Publier sur le Web / intégrer" de votre feuille -->
+        <iframe title="Planning des réservations"
+          src="https://docs.google.com/spreadsheets/d/EXEMPLE_PUBLIQUE_POUR_LECTURE/preview">
+        </iframe>
+        <div class="btns">
+          <!-- Remplacez les href par vos liens réels -->
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/VOTRE_FEUILLE/edit" target="_blank" rel="noopener">✏️ Modifier sur Google Sheets</a>
+          <a class="btn" href="https://your-tenant.sharepoint.com/sites/club/Documents%20partages/Reservations.xlsx" target="_blank" rel="noopener">✏️ Modifier sur Excel Online</a>
+          <a class="btn" href="#guide">📘 Guide d’utilisation</a>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h3 id="guide" style="margin:6px 0 8px">Guide d’utilisation</h3>
+        <ul>
+          <li>⚪ <strong>Lecture</strong> : accessible à tous via ce site.</li>
+          <li>🟢 <strong>Édition</strong> : réservée au groupe <em>Licenciés</em> (connexion requise).</li>
+          <li>🛡️ <strong>Admin</strong> : peut débloquer/annuler des créneaux.</li>
+          <li>🚫 Les doublons sont automatiquement signalés dans la feuille.</li>
+        </ul>
+        <hr style="opacity:.15;margin:14px 0">
+        <p class="small">Besoin d’aide ? Contact : <a href="mailto:contact@votreclub.fr">contact@votreclub.fr</a></p>
+      </aside>
+    </div>
+
+    <footer>
+      <p>© Votre Club – Réservations terrains</p>
+    </footer>
+  </div>
+</body>
+</html>
