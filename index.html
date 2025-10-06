@@ -51,9 +51,9 @@
       <section class="card">
         <h2 style="margin:6px 0 8px">Planning (lecture seule)</h2>
         <p class="small">Si l’aperçu ne se charge pas, utilisez le bouton “Ouvrir le planning”.</p>
-        <iframe id="planningFrame" title="Planning" src="PUT_YOUR_PUBHTML_URL_HERE"></iframe>
+        <iframe id="planningFrame" title="Planning" src="https://docs.google.com/spreadsheets/d/e/ABC123/pubhtml?gid=0&single=true&widget=true&headers=false"></iframe>
         <div class="btns">
-          <a class="btn" id="openSheet" href="#" target="_blank" rel="noopener">🔗 Ouvrir le planning</a>
+          <a class="btn" id="openSheet" href="https://docs.google.com/spreadsheets/d/e/ABC123/pubhtml?gid=0&single=true" target="_blank" rel="noopener">🔗 Ouvrir le planning</a>
         </div>
       </section>
 
@@ -90,5 +90,11 @@
 
   <script src="js/firebase-config.sample.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    const pubUrl = "https://docs.google.com/spreadsheets/d/e/ABC123/pubhtml?gid=0&single=true&widget=true&headers=false";
+    document.getElementById("planningFrame").src = pubUrl;
+    document.getElementById("openSheet").href = pubUrl.replace("&widget=true&headers=false", "");
+  </script>
+
 </body>
 </html>
