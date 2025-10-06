@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Réservation des terrains – Club</title>
+  <title>Cancha – Réservations terrains</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
@@ -15,9 +15,9 @@
     .subtitle{color:var(--muted);font-size:clamp(13px,2.5vw,16px)}
     .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:18px}
     .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    @media (min-width:900px){.grid{grid-template-columns:1.2fr .8fr}}
+    @media (min-width:1000px){.grid{grid-template-columns:1.2fr .8fr}}
     .btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-    .btn{appearance:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);padding:10px 14px;border-radius:14px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+    .btn{appearance:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);padding:10px 14px;border-radius:14px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
     .btn:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(94,234,212,.15)}
     iframe{width:100%;height:70vh;border:0;border-radius:14px;background:#0b1020}
     .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(94,234,212,.15);color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.3px}
@@ -25,7 +25,12 @@
     li{margin:8px 0}
     footer{opacity:.8;color:var(--muted);font-size:12px;margin-top:18px}
     .small{font-size:12px;color:var(--muted)}
-    code{background:#0e1731;border:1px solid rgba(255,255,255,.08);padding:3px 6px;border-radius:8px}
+    .hidden{display:none}
+    .field{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+    input,select{padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--text)}
+    label{font-weight:600}
+    .list{margin-top:10px}
+    .item{padding:10px;border:1px solid rgba(255,255,255,.12);border-radius:12px;margin:6px 0}
   </style>
 </head>
 <body>
@@ -34,42 +39,56 @@
       <div>
         <div class="pill">Réservations</div>
         <div class="title">Terrains – planning et réservations</div>
-        <div class="subtitle">Consultez les créneaux disponibles et les réservations. L’édition est limitée aux licenciés/adhérents et à l’administrateur du club.</div>
+        <div class="subtitle">Lecture publique via Google Sheets. Création de compte et réservations via Firebase (auth + Firestore).</div>
+      </div>
+      <div id="authBox">
+        <button id="btnLoginGoogle" class="btn">Se connecter</button>
+        <button id="btnLogout" class="btn hidden">Se déconnecter</button>
       </div>
     </header>
 
     <div class="grid">
       <section class="card">
         <h2 style="margin:6px 0 8px">Planning (lecture seule)</h2>
-        <p class="small">Le tableau ci‑dessous est affiché en lecture seule. Pour modifier, cliquez sur l’un des boutons ci‑dessous (authentification requise).</p>
-        <!-- Remplacez l’URL ci-dessous par le lien "Publier sur le Web / intégrer" de votre feuille -->
-        <iframe title="Planning des réservations"
-          src="https://docs.google.com/spreadsheets/d/e/2PACX-1vREbb5AaLv0unzw_bwcK7Np_wbNOaKpPikh12aJDTH41ny6IKm0xGi9eqGf6OnTI8caL2iCTtsIO_Sq/pubhtml">
-        </iframe>
+        <p class="small">Si l’aperçu ne se charge pas, utilisez le bouton “Ouvrir le planning”.</p>
+        <iframe id="planningFrame" title="Planning" src="PUT_YOUR_PUBHTML_URL_HERE"></iframe>
         <div class="btns">
-          <!-- Remplacez les href par vos liens réels -->
-          <a class="btn" href="https://docs.google.com/spreadsheets/d/1Bf05P2csRhVZFedrYwWD_YfN1AW0YzF_ZjAmQnleA4/edit?gid=1473267582#gid=1473267582" target="_blank" rel="noopener">✏️ Modifier sur Google Sheets</a>
-          <!-- Option Excel Online retirée pour l’instant : utilisez-la si vous migrez vers Microsoft 365 -->
-          <a class="btn" href="#guide">📘 Guide d’utilisation</a>
+          <a class="btn" id="openSheet" href="#" target="_blank" rel="noopener">🔗 Ouvrir le planning</a>
         </div>
       </section>
 
       <aside class="card">
-        <h3 id="guide" style="margin:6px 0 8px">Guide d’utilisation</h3>
-        <ul>
-          <li>⚪ <strong>Lecture</strong> : accessible à tous via ce site.</li>
-          <li>🟢 <strong>Édition</strong> : réservée au groupe <em>Licenciés</em> (connexion requise).</li>
-          <li>🛡️ <strong>Admin</strong> : peut débloquer/annuler des créneaux.</li>
-          <li>🚫 Les doublons sont automatiquement signalés dans la feuille.</li>
-        </ul>
-        <hr style="opacity:.15;margin:14px 0">
-        <p class="small">Besoin d’aide ? Contact : <a href="mailto:contact@votreclub.fr">contact@votreclub.fr</a></p>
+        <h3 style="margin:6px 0 8px">Mon compte licencié</h3>
+        <p class="small" id="whoami">Non connecté.</p>
+        <form id="profileForm" class="hidden">
+          <div class="field"><label>Nom Prénom</label><input name="fullName" required></div>
+          <div class="field"><label>N° licence</label><input name="licence" required></div>
+          <div class="field"><label>Série</label><select name="serie"><option>NC</option><option>4e série</option><option>3e série</option><option>2e série</option><option>1re série</option></select></div>
+          <button class="btn" type="submit">Enregistrer mon profil</button>
+          <p class="small" id="profileMsg"></p>
+        </form>
+        <hr style="opacity:.2;margin:14px 0">
+        <h3>Réserver un créneau</h3>
+        <form id="bookingForm" class="hidden">
+          <div class="field"><label>Date</label><input name="date" type="date" required></div>
+          <div class="field"><label>Heure début</label><input name="start" type="time" step="1800" required></div>
+          <div class="field"><label>Durée (minutes)</label><select name="duration"><option>30</option><option>60</option><option>90</option></select></div>
+          <div class="field"><label>Terrain</label><select name="court"><option>T1</option><option>T2</option><option>T3</option></select></div>
+          <button class="btn" type="submit">Réserver</button>
+          <p class="small" id="bookingMsg"></p>
+        </form>
+        <div class="list" id="myBookings"></div>
       </aside>
     </div>
 
-    <footer>
-      <p>© Votre Club – Réservations terrains</p>
-    </footer>
+    <footer><p>© Votre Club – Cancha</p></footer>
   </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore-compat.js"></script>
+
+  <script src="js/firebase-config.sample.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+    match /reservations/{resId} {
+      function isLoggedIn() { return request.auth != null; }
+      function isOwner() { return resource.data.uid == request.auth.uid; }
+      function creatingOwn() { return request.resource.data.uid == request.auth.uid; }
+      allow create: if isLoggedIn() && !exists(/databases/$(database)/documents/reservations/$(resId)) && creatingOwn();
+      allow read: if isLoggedIn() && isOwner();
+      allow update, delete: if isLoggedIn() && isOwner();
+    }
+  }
+}
